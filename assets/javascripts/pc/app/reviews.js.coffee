@@ -271,10 +271,20 @@ $(document).on "change", "select.select-rating", ->
       $(this).addClass("star-empty")
 
 $(document).on "change", "select#category", ->
-  $.getScript($(this).val())
+  $select = $(this)
+  url = $select.data("url")
+  url_builder = new UrlBuilder(url)
+  category_id = $select.val()
+  url_builder.add_param("category_id", category_id) if category_id
+  $.getScript(url_builder.build())
 
 $(document).on "change", "select#sort_type", ->
-  $.getScript($(this).val())
+  $select = $(this)
+  url = $select.data("url")
+  url_builder = new UrlBuilder(url)
+  order = $select.val()
+  url_builder.add_param("order", order) if order
+  $.getScript(url_builder.build())
 
 $(document).on "click", ".comments-link-collapse", ->
   if $(this).hasClass("selected")
@@ -334,13 +344,7 @@ $(document).on "click", ".edit-nonmember", ->
     })
 
 $(document).on "click", ".field-box.add-image-container", ->
-  $form = $(this).closest("form")
-  $image_fields_container = $form.find(".image-fields-container")
-  images_count = $image_fields_container.data("images-count")
-  if images_count < $image_fields_container.data("max-images-count")
-    $form.find("input#review_image"+(images_count + 1)).trigger("click")
-  else
-    alert "리뷰 이미지는 최대 4장까지 가능합니다."
+  app.review_image.add_image_container()
 
 $(document).on "ajax:before", "form.form-review", (e) ->
   result = true
